@@ -1,15 +1,21 @@
-REM delete previous files
+@echo off
+REM Eliminar la ROM anterior para evitar confusiones
 DEL *.gb
 
-REM compile .c files into .o files
-C:\gbdk\bin\lcc -c -o main.o main.c
+REM Compilar los archivos .c de la carpeta src/ a archivos .o en la raíz
+C:\gbdk\bin\lcc -c -o main.o src\main.c
+C:\gbdk\bin\lcc -c -o player.o src\player.c
 
-REM Compile a .gb file from the compiled .o files
-C:\GBDK\bin\lcc  -o PoPoPop!.gb main.o
+REM Unir los archivos .o y generar la ROM final
+C:\gbdk\bin\lcc -o PoPoPop!.gb main.o player.o
 
-REM delete intermediate files created for the conmpilation process
+REM Limpiar todos los archivos intermedios generados por el proceso
 DEL *.asm
 DEL *.lst
 DEL *.ihx
 DEL *.sym
 DEL *.o
+DEL *.map
+DEL *.noi
+
+echo Compilacion terminada.
