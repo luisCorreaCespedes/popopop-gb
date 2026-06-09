@@ -4,11 +4,13 @@
 #include <gb/gb.h>
 #include <stdint.h>
 
-// Variables globales del jugador
-extern uint8_t player_x;
+// --- VARIABLES GLOBALES DE JUGADOR ---
+// player_world_x: Posición lógica en el mapa completo (no en la pantalla)
+extern uint8_t player_world_x;
 extern uint8_t player_y;
+extern uint8_t camera_x;
 
-// Funciones del jugador
+// --- PROTOTIPOS DE FUNCIONES ---
 void setup_player(void);
 void update_player(void);
 
