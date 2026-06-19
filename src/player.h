@@ -4,8 +4,9 @@
 #include <gb/gb.h>
 #include <stdint.h>
 
-extern uint8_t player_x;
-extern uint8_t player_y;
+// Coordenadas en la cuadrícula (0 a 9 en X, 0 a 8 en Y)
+extern uint8_t cursor_col;
+extern uint8_t cursor_row;
 
 void setup_player(void);
 void update_player(void);

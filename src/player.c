@@ -1,46 +1,51 @@
 #include "player.h"
 
-// Posición inicial del Player
-uint8_t player_x = 80;  
-uint8_t player_y = 72; 
+// Iniciamos en el centro de la pantalla
+// Columnas (0 al 9) | Filas (0 al 8)
+uint8_t cursor_col = 4;  
+uint8_t cursor_row = 4;  
 
-// Velocidad base (1 píxel por frame)
-const uint8_t MOVE_SPEED = 1;
+uint8_t previous_keys = 0;
 
 void setup_player(void) {
+    // Sprite 0 usa el Tile 0 (arriba) y el Tile 1 (abajo)
     set_sprite_tile(0, 0); 
-    set_sprite_tile(1, 0); 
-
-    move_sprite(0, player_x, player_y);
-    move_sprite(1, player_x + 8, player_y);
+    
+    // Sprite 1 usa el Tile 2 (arriba) y el Tile 3 (abajo)
+    set_sprite_tile(1, 2); 
+    
+    // Cálculo de posición inicial (Píxeles = Casilla * 16 + Offset de Hardware)
+    uint8_t px = (cursor_col * 16) + 8;
+    uint8_t py = (cursor_row * 16) + 16;
+    
+    move_sprite(0, px, py);
+    move_sprite(1, px + 8, py);
 }
 
 void update_player(void) {
     uint8_t keys = joypad();
 
-    // --- LÓGICA DE 4 DIRECCIONES ---
-    
-    if (keys & J_UP) {
-        if (player_y > 16) {
-            player_y -= MOVE_SPEED;
-        }
+    // --- MOVIMIENTO DE CUADRÍCULA ESTRICTO ---
+    if ((keys & J_UP) && !(previous_keys & J_UP)) {
+        if (cursor_row > 0) cursor_row--;
     }
-    else if (keys & J_DOWN) {
-        if (player_y < 144) {
-            player_y += MOVE_SPEED;
-        }
+    else if ((keys & J_DOWN) && !(previous_keys & J_DOWN)) {
+        if (cursor_row < 8) cursor_row++; // Máximo 8 filas (144px alto)
     }
-    else if (keys & J_LEFT) {
-        if (player_x > 8) {
-            player_x -= MOVE_SPEED;
-        }
+    else if ((keys & J_LEFT) && !(previous_keys & J_LEFT)) {
+        if (cursor_col > 0) cursor_col--;
     }
-    else if (keys & J_RIGHT) {
-        if (player_x < 152) {
-            player_x += MOVE_SPEED;
-        }
+    else if ((keys & J_RIGHT) && !(previous_keys & J_RIGHT)) {
+        if (cursor_col < 9) cursor_col++; // Máximo 9 columnas (160px ancho)
     }
 
-    move_sprite(0, player_x, player_y);
-    move_sprite(1, player_x + 8, player_y);
+    previous_keys = keys;
+
+    // --- ACTUALIZACIÓN VISUAL ---
+    // Traducimos la coordenada de la cuadrícula a píxeles de pantalla reales
+    uint8_t px = (cursor_col * 16) + 8;
+    uint8_t py = (cursor_row * 16) + 16;
+
+    move_sprite(0, px, py);
+    move_sprite(1, px + 8, py);
 }
